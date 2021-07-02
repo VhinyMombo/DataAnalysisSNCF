@@ -5,7 +5,18 @@ def getData(ID):
     for name in df.columns:
         if name.startswith('nombre'):
             df[name] = df[name].apply(pd.to_numeric)
-    # df['Date'] = pd.to_datetime(df['Date'],format='%Y-%m-%d',exact = False)
+    if ID == 'regularite-mensuelle-ter':
+        df = df.drop(columns=["Commentaires"])
+    elif ID == "regularite-mensuelle-intercites":
+        df = df.drop(columns=["empty"])
+    elif ID == "regularite-mensuelle-tgv-aqst":
+        df = df.rename(columns={'Période': 'Date'})
+        df = df.drop(columns=["Année",
+                              "Mois",
+                              "Commentaire (facultatif) annulations",
+                              "Commentaire (facultatif) retards au départ",
+                             "Commentaire (facultatif) retards à l'arrivée"])
+    df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d', exact=False)
     return df
 
 
