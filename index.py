@@ -11,6 +11,7 @@ from navbar import Navbar
 
 # Import app
 from app import app
+from apps import regularite, tempTravail, NombreMaterielRoulants
 
 # Import server for deployment
 
@@ -58,10 +59,10 @@ def display_page(pathname):
         ''')], className='home')
     elif pathname == '/apps/regularite':
         return regularite.layout
-    elif pathname == '/travail':
-        return 'ERROR 404: Page not found!'
-    elif pathname == '/field':
-        return 'ERROR 404: Page not found!'
+    elif pathname == '/apps/tempTravail':
+        return tempTravail.layout
+    elif pathname == '/apps/NombreMaterielRoulants':
+        return NombreMaterielRoulants.layout
     else:
         return 'ERROR 404: Page not found!'
 

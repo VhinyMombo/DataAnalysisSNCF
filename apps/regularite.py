@@ -36,7 +36,7 @@ layout = dbc.Container((
     dbc.Row([
         dbc.Col(dcc.Dropdown(id='Dataset-Dropdown',
                              multi=False,
-                             value='',
+                             value=dataset[2],
                              placeholder='Select Dataset',
                              options=[{'label': c, 'value': c}
                                       for c in dataset]
@@ -59,6 +59,7 @@ layout = dbc.Container((
 def displays_graph(value, div_children):
     global df
     df = getData(value)
+    dfobj = df.select_dtypes(include=object).columns
     new_child = html.Div(
         children=[
             html.Br(),
@@ -66,16 +67,16 @@ def displays_graph(value, div_children):
             dbc.Row([
                 dbc.Col(dcc.Dropdown(id='filter-Dropdown',
                                      multi=False,
-                                     value='',
+                                     value=dfobj[0],
                                      placeholder='Select a filter',
                                      options=[{'label': c, 'value': c}
-                                              for c in df.select_dtypes(include=object).columns]
+                                              for c in dfobj]
                                      ),
                         width={'size': 4, 'offset': 1, 'order': 1}
                         ),
                 dbc.Col(dcc.Dropdown(id='Stastitic-Dropdown',
                                      multi=False,
-                                     value='',
+                                     value=stats_name[0],
                                      placeholder='Select a stastitic',
                                      options=[{'label': c, 'value': c}
                                               for c in stats_name]
@@ -94,7 +95,7 @@ def displays_graph(value, div_children):
               [Input('filter-Dropdown', 'value')],
               [State('container2', 'children')]
               )
-def update_dropdown(First_filter,div_children2):
+def update_dropdown(First_filter, div_children2):
     div_children2 = html.Div(
         children=[
             html.Br(),
