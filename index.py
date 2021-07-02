@@ -9,6 +9,9 @@ import dash_bootstrap_components as dbc
 from apps import regularite
 from navbar import Navbar
 
+# Import server for deployment
+from app import srv as server
+
 # Import app
 from app import app
 from apps import regularite, tempTravail, NombreMaterielRoulants
@@ -82,4 +85,4 @@ app.layout = index()
 # Call app server
 if __name__ == '__main__':
     # set debug to false when deploying app
-    app.run_server(debug=True,port=2000)
+    app.run_server(debug=True)

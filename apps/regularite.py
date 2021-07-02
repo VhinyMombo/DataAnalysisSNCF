@@ -138,10 +138,10 @@ def update_graphics(categorie, region, first_filter, stats, div_children3):
     valeur = [data[categorie].size,
               data[categorie].min(axis=0),
               data[categorie].max(axis=0),
-              data[categorie].mean(axis=0),
-              data[categorie].std(axis=0),
-              data[categorie].skew(axis=0),
-              data[categorie].kurtosis(axis=0)]
+              data[categorie].mean(axis=0).round(4),
+              data[categorie].std(axis=0).round(4),
+              data[categorie].skew(axis=0).round(4),
+              data[categorie].kurtosis(axis=0).round(4)]
     files = pd.DataFrame(data={'Statistiques': Statistiques, 'Valeur': valeur})
     # create some matplotlib graph
     nom = 'image'
