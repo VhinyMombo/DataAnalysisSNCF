@@ -5,9 +5,10 @@ import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 import plotly.graph_objs as go
-import plotly.express as px
 from dash.dependencies import Input, Output, State
+
 from app import app
+from function import build_hierarchical_dataframe
 
 ################################################################
 df = pd.read_csv(
@@ -16,18 +17,26 @@ df = pd.read_csv(
 ##################################################################
 layout = dbc.Container((
     html.H4('Materiel en circulation', style={"textAlign": "center"}),
-    dbc.Row(
+    html.Br(),
+    html.Br(),
+    dbc.Row([
         dbc.Col(
-            dcc.Dropdown(id='PIE-Dropdown',
+            dcc.Dropdown(id='PIE-Dropdown1',
                          multi=False,
                          value=df.select_dtypes(include='object').columns[0],
                          placeholder='Select a filter',
                          options=[{'label': c, 'value': c}
                                   for c in df.select_dtypes(include='object').columns]
                          ),
-            width={'size': 4, 'offset': 4, 'order': 1}
-        )
-    ),
+            width={'size': 4, 'offset': 1, 'order': 1}
+        ),
+        dbc.Col(
+            id="Pie-Col",
+            children=[],
+            width={'size': 4, 'offset': 2, 'order': 1}
+        ),
+
+    ]),
     html.Div(id='PieChart-div', children=[]),
     # dcc.Graph(id='PieChart'),
 ),
@@ -37,29 +46,49 @@ layout = dbc.Container((
 
 ###################################################
 @app.callback(
+    Output('Pie-Col', 'children'),
+    [Input('PIE-Dropdown1', 'value')],
+    [State('Pie-Col', 'children')]
+)
+def update_dropdown2(dropValue,dcc_children):
+    dff = df.select_dtypes(include='object').columns
+    dff = dff.drop(dropValue)
+    dcc_children = dcc.Dropdown(id='PIE-Dropdown2',
+              multi=False,
+              value=dff[0],
+              placeholder='Select a filter',
+              options=[{'label': c, 'value': c}
+                       for c in dff]
+              )
+    return dcc_children
+
+@app.callback(
     Output('PieChart-div', 'children'),
-    [Input('PIE-Dropdown', 'value')],
+    [Input('PIE-Dropdown1', 'value'),
+     Input('PIE-Dropdown2', 'value')],
     [State('PieChart-div', 'children')]
 )
-def updatePIechart(materiel, div_children5):
-    dff = df.groupby(materiel).agg("sum")
+def updatePIechart(materiel1, materiel2, div_children5):
+    dff = df.groupby(materiel1).agg("sum")
+    levels = [materiel2, materiel1]  # levels used for the hierarchical chart
+    color_columns = ['Nombre de matériels exploitables', 'Nombre de matériels exploitables']
+    value_column = 'Nombre de matériels exploitables'
+    df_all_trees = build_hierarchical_dataframe(df, levels, value_column, color_columns)
+
     div_children5 = html.Div(
         children=[
             html.Br(),
             html.Br(),
-            dbc.Row(
+            dbc.Row([
                 dbc.Col(
                     dcc.Graph(
                         id="PieChart",
-                        style={'width': '180vh',
-                               'height': '90vh',
-                               "textAlign": "center"},
                         figure={
                             'data': [
                                 go.Pie(values=dff["Nombre de matériels exploitables"],
                                        labels=dff.index,
                                        textinfo='label+percent',
-                                       name=materiel,
+                                       name=materiel1,
                                        title=df.select_dtypes(include='int64').columns[0],
                                        ),
                             ],
@@ -74,8 +103,31 @@ def updatePIechart(materiel, div_children5):
                             )
                         }
                     )
+                ),
+                dbc.Col(
+                    dcc.Graph(
+                        id='Sunburst',
+                        figure={
+                            'data': [
+                                go.Sunburst(
+                                    labels=df_all_trees['id'],
+                                    parents=df_all_trees['parent'],
+                                    values=df_all_trees['value'],
+                                    branchvalues='total',
+                                    marker=dict(
+                                        colorscale='RdBu',
+                                        cmid=0.5310344827586206),
+                                    hovertemplate='<b>%{label} </b> <br> Nombre de matériel <br> exploitable: %{value}',
+                                    name=''
+                                )
+                            ],
+                            'layout': go.Layout(
+                                margin=dict(t=10, b=10, r=10, l=10)
+                            )
+                        }
+                    )
                 )
-            )
+            ])
         ])
     return div_children5
 
