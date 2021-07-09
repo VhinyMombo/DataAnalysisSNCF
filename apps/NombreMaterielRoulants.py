@@ -15,7 +15,7 @@ df = pd.read_csv(
     "https://ressources.data.sncf.com/explore/dataset/nombre-de-materiels-roulants-sncf-voyageurs-exploitables-par-serie-activite/download/?format=csv&timezone=Europe/Berlin&lang=fr&use_labels_for_header=true&csv_separator=%3B",
     sep=';')
 ##################################################################
-layout = dbc.Container((
+layout = html.Div([
     html.H4('Materiel en circulation', style={"textAlign": "center"}),
     html.Br(),
     html.Br(),
@@ -39,8 +39,9 @@ layout = dbc.Container((
     ]),
     html.Div(id='PieChart-div', children=[]),
     # dcc.Graph(id='PieChart'),
-),
-    fluid=True
+],
+    style={'marginBottom': 50, 'marginTop': 25}
+
 )
 
 
@@ -83,6 +84,7 @@ def updatePIechart(materiel1, materiel2, div_children5):
                 dbc.Col(
                     dcc.Graph(
                         id="PieChart",
+                        style={'width': '80vh', 'height': '80vh'},
                         figure={
                             'data': [
                                 go.Pie(values=dff["Nombre de matériels exploitables"],
@@ -94,19 +96,19 @@ def updatePIechart(materiel1, materiel2, div_children5):
                             ],
                             'layout': go.Layout(
                                 xaxis_tickfont_size=14,
-                                legend=dict(
-                                    x=0.8,
-                                    y=1.0,
-                                    bgcolor='rgba(255, 255, 255, 0)',
-                                    bordercolor='rgba(255, 255, 255, 0)'
-                                )
+                                margin=dict(t=10, b=10, r=10, l=10)
+
+
                             )
                         }
-                    )
+                    ),
+                    width={'size': 5, 'offset': 1, 'order': 1}
+
                 ),
                 dbc.Col(
                     dcc.Graph(
                         id='Sunburst',
+                        style={'width': '80vh', 'height': '80vh'},
                         figure={
                             'data': [
                                 go.Sunburst(
@@ -125,10 +127,13 @@ def updatePIechart(materiel1, materiel2, div_children5):
                                 margin=dict(t=10, b=10, r=10, l=10)
                             )
                         }
-                    )
+                    ),
+                    width={'size': 5, 'offset':1, 'order': 2}
                 )
             ])
-        ])
+        ],
+        style={'marginBottom': 50, 'marginTop': 25}
+    )
     return div_children5
 
 

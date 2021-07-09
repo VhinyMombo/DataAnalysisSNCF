@@ -33,7 +33,7 @@ content = html.Div([
     html.Div(id='page-content')
 ])
 
-container = dbc.Container([
+container = html.Div([
     header,
     content,
 ])

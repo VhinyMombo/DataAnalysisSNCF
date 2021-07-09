@@ -15,7 +15,7 @@ def getData(ID):
                               "Mois",
                               "Commentaire (facultatif) annulations",
                               "Commentaire (facultatif) retards au départ",
-                             "Commentaire (facultatif) retards à l'arrivée"])
+                              "Commentaire (facultatif) retards à l'arrivée"])
     df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d', exact=False)
     return df
 
@@ -46,3 +46,59 @@ def build_hierarchical_dataframe(df, levels, value_column, color_columns=None):
                            color=df[color_columns[0]].sum() / df[color_columns[1]].sum()))
     df_all_trees = df_all_trees.append(total, ignore_index=True)
     return df_all_trees
+
+
+def ecdf(tab):
+    import numpy as np
+    N = len(tab)
+    X = np.sort(tab)
+    F = np.array(range(N)) / float(N - 1)
+    return X, F
+
+
+def f_repartition(X, n=10):
+    import numpy as np
+    x_min, x_max = min(X), max(X)
+    N = len(X)
+    dx = (x_max - x_min) / N
+    x_m, x_M = x_min - n * dx, x_max + n * dx
+    F = []
+    Xr = np.linspace(x_m, x_M, N + 2 * n)
+    for x in Xr:
+        F.append(sum(1.0 * (X < x)) / N)
+    return Xr, F
+
+
+def compute_MR(data):
+    import numpy as np
+    data_sort = np.sort(data)
+    n = len(data)
+    MR = []
+    for i in range(1, len(data) + 1):
+        MR.append((i - 0.3) / (n + 0.4))
+    return data_sort, np.array(MR)
+
+
+# Calcul les paramètres des lois de Weibull
+# return un triplet contenant le paramètre a,b des loi de Weibull et l'erreur
+def estimation_loi_weibull(data):
+    import scipy.stats as st
+    import numpy as np
+    X, cdf = compute_MR(data)  # calcul la fonction de repartition
+    lnX = np.log(X)
+    Y = np.log(-np.log(1 - cdf))
+    linreg = st.linregress(lnX, Y)
+    a = linreg.slope
+    b = np.exp(-linreg.intercept / a)
+    err = np.power((Y - (linreg.intercept + linreg.slope * lnX)), 2)
+    return a, b, np.sum(err)
+
+
+def ProbaDensityFunc(data, n=100):
+    import numpy as np
+    from scipy import stats
+    bins = np.linspace(min(data), max(data), n)
+    histogram, bins = np.histogram(data, bins=bins, density=True)
+    bin_centers = 0.5 * (bins[1:] + bins[:-1])
+    pdf = stats.norm.pdf(bin_centers)
+    return bin_centers, pdf, histogram
