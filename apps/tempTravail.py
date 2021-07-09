@@ -168,7 +168,7 @@ def build_hist(years, divChildren):
                 width={'size': 10, 'offset': 1, 'order': 1 }
             ),
             html.Br(),
-            html.H2('Test de Kolmorov - Smirnov', style={"textAlign": "center"}),
+            html.H2('Test de Kolmogorov - Smirnov', style={"textAlign": "center"}),
             html.Br(),
             dcc.Markdown('''
             On cherche à determiner si le temps de travail à la SNCF suit
