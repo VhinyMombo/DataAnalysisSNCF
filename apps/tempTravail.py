@@ -132,7 +132,8 @@ def build_hist(years, divChildren):
                                              go.Scatter(y=tfr, x=xfr,
                                                         mode='lines',
                                                         name='France',
-                                                        marker_color='rgb(26, 118, 255)')
+                                                        marker_color='rgb(26, 118, 255)',
+                                                        )
                                              ],
                                     'layout': go.Layout(
                                         title='Fonction de Repartition du temps de Travail entre ' + str(

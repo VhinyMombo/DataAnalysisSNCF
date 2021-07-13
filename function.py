@@ -85,13 +85,15 @@ def estimation_loi_weibull(data):
     import scipy.stats as st
     import numpy as np
     X, cdf = compute_MR(data)  # calcul la fonction de repartition
+    cdf = cdf[X != 0]
+    X = X[X != 0]
     lnX = np.log(X)
     Y = np.log(-np.log(1 - cdf))
     linreg = st.linregress(lnX, Y)
     a = linreg.slope
     b = np.exp(-linreg.intercept / a)
     err = np.power((Y - (linreg.intercept + linreg.slope * lnX)), 2)
-    return a, b, np.sum(err)
+    return a, b, np.sum(err)/len(err)
 
 
 def ProbaDensityFunc(data, n=100):
@@ -102,3 +104,18 @@ def ProbaDensityFunc(data, n=100):
     bin_centers = 0.5 * (bins[1:] + bins[:-1])
     pdf = stats.norm.pdf(bin_centers)
     return bin_centers, pdf, histogram
+
+
+def weib(x, a, b):
+    import numpy as np
+    return (a / b) * (x / b) ** (a - 1) * np.exp(-(x / b) ** a)
+
+
+def plotWeibParams(data, a, b):
+    import numpy as np
+    count, bins = np.histogram(data, density=True, bins=10)
+    dx = (count.max() - bins.min()) / 100
+    x = np.linspace(bins.min() + 5 * dx, bins.max() - 5 * dx, 100)
+    scale = count.max() / weib(x, a, b).max()
+    cdf = weib(x, a, b) * scale
+    return x, cdf
