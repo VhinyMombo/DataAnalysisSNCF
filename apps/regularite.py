@@ -64,7 +64,6 @@ def displays_graph(value, div_children):
     global df
     df = getData(value)
     dfobj = df.select_dtypes(include=object).columns
-    reg = df[dfobj[0]].unique()[0]
     new_child = html.Div(
         children=[
             html.Br(),
@@ -97,7 +96,7 @@ def displays_graph(value, div_children):
                     children=[
                         dcc.Dropdown(
                             id='Region-Dropdown',
-                            value=reg,
+                            value= df[dfobj[0]].unique()[0],
                             multi=False,
                             placeholder='Select ...',
                             options=[]
