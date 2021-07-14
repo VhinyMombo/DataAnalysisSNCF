@@ -16,7 +16,7 @@ from function import *
 
 ####################################
 dataset = ["regularite-mensuelle-intercites", "regularite-mensuelle-ter", "ponctualite-mensuelle-transilien",
-           "regularite-mensuelle-tgv-aqst"]
+           "regularite-mensuelle-tgv-aqst", "regularite-mensuelle-tgv-axes"]
 df = pd.DataFrame()
 Statistiques = ["nombre d'observation",
                 "minimum",
@@ -64,6 +64,7 @@ def displays_graph(value, div_children):
     global df
     df = getData(value)
     dfobj = df.select_dtypes(include=object).columns
+    reg = df[dfobj[0]].unique()[0]
     new_child = html.Div(
         children=[
             html.Br(),
@@ -93,7 +94,15 @@ def displays_graph(value, div_children):
             dbc.Row((
                 dbc.Col(
                     id="dbc_Region-Dropdown",
-                    children=[],
+                    children=[
+                        dcc.Dropdown(
+                            id='Region-Dropdown',
+                            value=reg,
+                            multi=False,
+                            placeholder='Select ...',
+                            options=[]
+                        )
+                    ],
                     width={'size': 4, 'offset': 1, 'order': 1}
                 ),
                 dbc.Col(
@@ -114,30 +123,22 @@ def displays_graph(value, div_children):
     return new_child
 
 
-@app.callback(Output('dbc_Region-Dropdown', 'children'),
+@app.callback(Output('Region-Dropdown', 'options'),
               [Input('filter-Dropdown', 'value')],
-              [State('dbc_Region-Dropdown', 'children')]
               )
-def updateDbcRegion(First_filter, reg_child):
-    reg_child = dcc.Dropdown(
-        id='Region-Dropdown',
-        multi=False,
-        value=df[First_filter][0],
-        placeholder='Select ...',
-        options=[{'label': c, 'value': c}
-                 for c in df[First_filter].unique()]
-    )
-    return reg_child
+def updateDbcRegion(First_filter):
+
+    return [{'label': c, 'value': c}
+            for c in df[First_filter].unique()]
 
 
 @app.callback(Output('container2', 'children'),
               [Input('categorie-Dropdown', 'value'),
                Input('Region-Dropdown', 'value'),
                Input('filter-Dropdown', 'value'),
-               Input('Stastitic-Dropdown', 'value')],
-              [State('container2', 'children')]
+               Input('Stastitic-Dropdown', 'value')]
               )
-def update_graphics(categorie, region, first_filter, stats, div_children2):
+def update_graphics(categorie, region, first_filter, stats):
     data = df[df[first_filter] == region]
     valeur = [data[categorie].size,
               data[categorie].min(axis=0),
@@ -359,13 +360,14 @@ def update_graphics(categorie, region, first_filter, stats, div_children2):
                                     go.Histogram(
                                         x=datahist,
                                         nbinsx=30,
+                                        name="donnée historique",
                                         histnorm='probability density',
                                         marker_color='rgb(55, 83, 109)',
                                         opacity=0.75),
                                     go.Scatter(x=xhist,
                                                y=cdf,
                                                mode='lines',
-                                               name='Estimated Weibull',
+                                               name='loi de Weibull estimé',
                                                marker_color='rgb(26, 118, 255)')
                                 ],
                                 'layout': go.Layout(

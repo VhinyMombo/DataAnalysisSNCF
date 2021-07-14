@@ -16,8 +16,13 @@ def getData(ID):
                               "Commentaire (facultatif) annulations",
                               "Commentaire (facultatif) retards au départ",
                               "Commentaire (facultatif) retards à l'arrivée"])
+    elif ID == "regularite-mensuelle-tgv-axes":
+        df = df.rename(columns={'Période': 'Date'})
+        df = df.drop(columns=["Année",
+                              "Mois"])
     df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d', exact=False)
     return df
+
 
 
 def build_hierarchical_dataframe(df, levels, value_column, color_columns=None):
