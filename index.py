@@ -14,7 +14,7 @@ from app import srv as server
 
 # Import app
 from app import app
-from apps import regularite, tempTravail, NombreMaterielRoulants
+from apps import regularite, tempTravail, NombreMaterielRoulants, EmissionCO2e
 
 # Import server for deployment
 
@@ -66,8 +66,8 @@ def display_page(pathname):
         return tempTravail.layout
     elif pathname == '/apps/NombreMaterielRoulants':
         return NombreMaterielRoulants.layout
-    else:
-        return 'ERROR 404: Page not found!'
+    elif pathname =='/apps/EmissionCO2e':
+        return EmissionCO2e.layout
 
 
 # Main index function.py that will call and return all layout variables

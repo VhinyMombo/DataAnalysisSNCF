@@ -47,12 +47,75 @@ layout = html.Div([
                 )
     ]
     ),
+    dcc.Markdown(id='Dataset-markdown',
+                 children=[],
+                 style={"textAlign": "center",
+                        "font-size": "18px"},
+                 ),
     html.Div(id='container', children=[])
 
 ]),
 
 
 #    fluid=True)
+
+@app.callback(
+    Output('Dataset-markdown','children'),
+    [Input('Dataset-Dropdown', 'value')]
+)
+
+def update_markdown_dataset(Dataset):
+    if Dataset == "regularite-mensuelle-intercites":
+        return '''
+        Régularité mensuelle des trains Intercités de jour depuis janvier 2014.
+
+Sur Intercités, la régularité est calculée lors de l’arrivée du train à la dernière gare de son parcours (terminus). Ce mode de calcul, qui n’intègre pas les gares intermédiaires, propose le retard cumulé sur l’ensemble d’un trajet.
+
+L’indicateur utilisé est celui de la « régularité composite » : un train est considéré en retard s’il arrive cinq minutes après son heure prévue pour un trajet de moins de 1h30, dix minutes pour un trajet de 1h30 à 3h, et quinze minutes pour un trajet de plus de 3h.
+
+Un train supprimé avant 16h la veille de sa circulation ne sera pas comptabilisé. En revanche, si l’annonce de sa suppression n’a pu être faite la veille avant 16h, le train sera bien comptabilisé comme un train supprimé, que cette suppression soit totale ou partielle (le train a effectué qu’une partie de son parcours). Par ailleurs, des trains Intercités peuvent effectuer une partie importante de leur trajet sous service TER. Ils sont alors comptabilisés dans les données de régularité TER.
+
+Le calcul de la régularité Intercités proposé ici ne prend pas en compte la totalité des trains, mais une sélection déterminée par l’Autorité de la Qualité de Service dans les Transports (AQST).
+        '''
+    elif Dataset == "regularite-mensuelle-ter":
+        return '''
+        Régularité mensuelle TER depuis janvier 2013.
+
+Sur TER, la régularité est calculée lors de l’arrivée du train à la dernière gare de son parcours (terminus). Ce mode de calcul, qui n’intègre pas les gares intermédiaires, propose le retard cumulé sur l’ensemble d’un trajet.
+
+L’indicateur utilisé est celui de la « régularité à cinq minutes » : un train est considéré en retard s’il arrive cinq minutes après son heure prévue. Les données proposées ne sont pas détaillées par ligne TER mais agrégées pour tous les TER d’une Région.
+
+En accord avec les Régions qui sont les autorités organisatrices des transports pour TER, un train supprimé avant 16h la veille de sa circulation ne sera pas comptabilisé. En revanche, si l’annonce de sa suppression n’a pu être faite la veille avant 16h, le train sera bien comptabilisé comme un train supprimé, que cette suppression soit totale ou partielle (le train a effectué qu’une partie de son parcours).
+        
+        '''
+    elif Dataset == "ponctualite-mensuelle-transilien":
+        return '''
+        Ponctualité mensuelle Transilien depuis janvier 2013.
+
+Sur Transilien, la qualité de service est évaluée au regard de la "ponctualité voyageurs", c’est-à-dire le pourcentage de voyageurs arrivant avec un retard de moins de cinq minutes à leur gare de destination.
+
+Depuis janvier 2002, en accord avec Île-de-France Mobilités (IDFM) - anciennement Syndicat des transports d’Ile-de-France (STIF) - qui est l’autorité organisatrice des transports pour Transilien, le mode de calcul ne s’effectue plus sur la base du nombre de trains mais du nombre de voyageurs impactés. L’objectif est de refléter la réalité du parcours de chaque voyageur. Pour chaque train supprimé ou retardé de plus de cinq minutes, il est donc possible de connaître le nombre de voyageurs qui sont impactés par une perturbation. 
+
+Pour réaliser ce calcul, des agents mandatés par IDFM et Transilien réalisent des comptages permettant de connaître le nombre d’entrants et de descendants dans les gares, et cela pour tous les trains au cours de la semaine. Ces données sont actualisées en fonction des données transmises par les portiques de contrôle.
+        '''
+    elif Dataset == "regularite-mensuelle-tgv-aqst":
+        return '''
+        Découvrez la régularité mensuelle TGV par liaisons (AQST).
+
+La régularité TGV tient compte des différentes durées de trajet des clients (aussi appelée composite).
+
+Les horaires d'arrivée sont également déterminés par des capteurs détectant le passage du train à un point déterminé marquant l'entrée en gare et exceptionnellement par des suivis manuel. La précision des mesures est la minute arrondie à minute inférieure, ce qui est conforme à l'ensemble des normes retenues pour la confection des horaires et chronogrammes de service.
+Le résultat de régularité global n’est ni la moyenne des résultats des 6 axes, ni la moyenne des résultats de l’ensemble des liaisons. En effet, le taux de régularité est le nombre de trains à l’heure à leur terminus sur le nombre de trains total ayant circulé sur le périmètre considéré. De plus, un même TGV peut compter dans plusieurs liaisons, mais il ne compte qu’une seule fois dans la régularité globale. 
+        '''
+    elif Dataset == "regularite-mensuelle-tgv-axes":
+        return '''
+        Découvrez la régularité mensuelle des grands axes TGV.
+
+La régularité TGV tient compte des différentes durées de trajet des clients (aussi appelée composite).
+
+Le 4 secteurs géographiques TGV correspondent aux quatre gares TGV parisiennes. TGV International regroupent les trains internationaux de SNCF (SVI, ALLEO, LYRIA, ELIPSOS). Les trains opérés par d'autres entreprises ferroviaires comme Thalys et Eurostar ne sont pas pris en compte.
+        '''
+
 
 
 @app.callback(
@@ -393,7 +456,7 @@ def update_graphics(categorie, region, first_filter, stats,children):
                                         tickfont_size=14,
                                     ),
                                     legend=dict(
-                                        x=0,
+                                        x=1.0,
                                         y=1.0,
                                         bgcolor='rgba(255, 255, 255, 0)',
                                         bordercolor='rgba(255, 255, 255, 0)'

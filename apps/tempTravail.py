@@ -18,7 +18,18 @@ annee = [*range(1851, 2021)]
 ##################################################################
 layout = html.Div([
     html.Br(),
-    html.H4('Select a range of years ', style={"textAlign": "center"}),
+    dcc.Markdown(
+        '''
+        Ce jeu de données présente la durée réglementaire de travail à la SNCF pour des postes à temps plein. Elle est diminuée des jours fériés et des jours de repos.
+
+Cette série est rapprochée pour information, de la chronologie du temps de travail établi par l'[INSEE]() pour la période 1950-2018 (comptes nationaux, base 2014).
+
+        ''',
+        style={"textAlign": "center",
+               "font-size": "18px"}
+    ),
+    html.Br(),
+    html.H4(" Selectionnez l'intervalle d'années qui vous interesse ", style={"textAlign": "center"}),
     html.Div(
         dbc.Row(
             dbc.Col(
@@ -105,7 +116,7 @@ def build_hist(years, divChildren):
                                             tickfont_size=14,
                                         ),
                                         legend=dict(
-                                            x=0,
+                                            x=1.0,
                                             y=1.0,
                                             bgcolor='rgba(255, 255, 255, 0)',
                                             bordercolor='rgba(255, 255, 255, 0)'

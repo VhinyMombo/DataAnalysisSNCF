@@ -16,6 +16,21 @@ df = pd.read_csv(
     sep=';')
 ##################################################################
 layout = html.Div([
+    dcc.Markdown(
+        '''
+        Ce jeu de données affiche le nombre de matériels roulants SNCF Voyageurs exploitables par série et par activité.
+
+Situation du Matériel = Exploitable
+Libellé ECM (En Charge de la Maintenance) = SNCF Mobilité
+Libellé Détenteur = SNCF Mobilité
+Libellé Exploitant = TER, Intercités, Transilien, Voyages SNCF
+Les matériels roulants des filiales (Thalys, etc.) sont hors périmètre.
+
+Pour le cas de la série V2N, chaque caisse correspond à un matériel roulant.
+        ''',
+        style={"textAlign": "center",
+               "font-size": "18px"}
+    ),
     html.H4('Materiel en circulation', style={"textAlign": "center"}),
     html.Br(),
     html.Br(),
@@ -96,7 +111,13 @@ def updatePIechart(materiel1, materiel2, div_children5):
                             ],
                             'layout': go.Layout(
                                 xaxis_tickfont_size=14,
-                                margin=dict(t=10, b=10, r=10, l=10)
+                                margin=dict(t=10, b=10, r=10, l=10),
+                                legend=dict(
+                                    x=1.0,
+                                    y=1.0,
+                                    bgcolor='rgba(255, 255, 255, 0)',
+                                    bordercolor='rgba(255, 255, 255, 0)'
+                                )
 
 
                             )

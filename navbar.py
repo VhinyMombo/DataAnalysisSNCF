@@ -8,6 +8,8 @@ def Navbar():
         dbc.NavItem(dbc.NavLink("Analyse de la regularité mensuelle", href='/apps/regularite')),
         dbc.NavItem(dbc.NavLink("Temps de Travail", href='/apps/tempTravail')),
         dbc.NavItem(dbc.NavLink("Nombre de matériels roulants", href='/apps/NombreMaterielRoulants')),
+        dbc.NavItem(dbc.NavLink("Émissions de CO2e sur les liaisons TGV", href='/apps/EmissionCO2e')),
+
     ],
         brand="Home",
         brand_href="/",
