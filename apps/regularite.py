@@ -407,4 +407,4 @@ def update_graphics(categorie, region, first_filter, stats,children):
         ]
     )
     children.append(div_children2)
-    return children
+    return div_children2
