@@ -119,8 +119,9 @@ def weib(x, a, b):
 def plotWeibParams(data, a, b):
     import numpy as np
     count, bins = np.histogram(data, density=True, bins=10)
-    dx = (count.max() - bins.min()) / 100
-    x = np.linspace(bins.min() + 5 * dx, bins.max() - 5 * dx, 100)
+    bins = (bins + np.roll(bins, -1))[:-1] / 2.0  # Milieu de chaque classe
+    dx = (count.max() - bins.min()) / 3
+    x = np.linspace(bins.min() + dx, bins.max() - dx, 200)
     scale = count.max() / weib(x, a, b).max()
     cdf = weib(x, a, b) * scale
     return x, cdf

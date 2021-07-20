@@ -64,6 +64,8 @@ def displays_graph(value, div_children):
     global df
     df = getData(value)
     dfobj = df.select_dtypes(include=object).columns
+    xdf = df[dfobj[0]].unique()
+    xdf = xdf[~pd.isnull(xdf)]
     new_child = html.Div(
         children=[
             html.Br(),
@@ -96,7 +98,7 @@ def displays_graph(value, div_children):
                     children=[
                         dcc.Dropdown(
                             id='Region-Dropdown',
-                            value= df[dfobj[0]].unique()[0],
+                            value=xdf[0],
                             multi=False,
                             placeholder='Select ...',
                             options=[]
@@ -126,7 +128,6 @@ def displays_graph(value, div_children):
               [Input('filter-Dropdown', 'value')],
               )
 def updateDbcRegion(First_filter):
-
     return [{'label': c, 'value': c}
             for c in df[First_filter].unique()]
 
@@ -135,9 +136,10 @@ def updateDbcRegion(First_filter):
               [Input('categorie-Dropdown', 'value'),
                Input('Region-Dropdown', 'value'),
                Input('filter-Dropdown', 'value'),
-               Input('Stastitic-Dropdown', 'value')]
+               Input('Stastitic-Dropdown', 'value')],
+              [State('container2', 'children')]
               )
-def update_graphics(categorie, region, first_filter, stats):
+def update_graphics(categorie, region, first_filter, stats,children):
     data = df[df[first_filter] == region]
     valeur = [data[categorie].size,
               data[categorie].min(axis=0),
@@ -358,10 +360,17 @@ def update_graphics(categorie, region, first_filter, stats):
                                 'data': [
                                     go.Histogram(
                                         x=datahist,
-                                        nbinsx=30,
+                                        #nbinsx=10,
+                                        xbins=dict(
+                                            start=min(datahist),
+                                            end=max(datahist),
+                                            size=4
+                                        ),
                                         name="donnée historique",
                                         histnorm='probability density',
                                         marker_color='rgb(55, 83, 109)',
+                                        marker_line_width=1,
+                                        marker_line_color="white",
                                         opacity=0.75),
                                     go.Scatter(x=xhist,
                                                y=cdf,
@@ -397,4 +406,5 @@ def update_graphics(categorie, region, first_filter, stats):
             )
         ]
     )
-    return div_children2
+    children.append(div_children2)
+    return children
