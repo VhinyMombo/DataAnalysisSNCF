@@ -62,7 +62,9 @@ layout = html.Div([
 )
 def displays_graph(value, div_children):
     global df
-    df = getData(value)
+    dff = getData(value)
+    df = dff
+    df[df.select_dtypes(include='object').columns] = df.select_dtypes(include='object').fillna('Autres')
     dfobj = df.select_dtypes(include=object).columns
     xdf = df[dfobj[0]].unique()
     xdf = xdf[~pd.isnull(xdf)]
@@ -129,7 +131,7 @@ def displays_graph(value, div_children):
               )
 def updateDbcRegion(First_filter):
     return [{'label': c, 'value': c}
-            for c in df[First_filter].unique()]
+            for c in df[First_filter].fillna('Autres').unique()]
 
 
 @app.callback(Output('container2', 'children'),
@@ -246,7 +248,7 @@ def update_graphics(categorie, region, first_filter, stats,children):
                                               mode='lines',
                                               name=" pour tous les " + first_filter,
                                               marker_color='rgb(26, 118, 255)',
-                                              opacity=0.1
+                                              opacity=0.3
                                           )
 
                                       ],
@@ -360,11 +362,11 @@ def update_graphics(categorie, region, first_filter, stats,children):
                                 'data': [
                                     go.Histogram(
                                         x=datahist,
-                                        #nbinsx=10,
+                                        #nbinsx=15,
                                         xbins=dict(
                                             start=min(datahist),
                                             end=max(datahist),
-                                            size=4
+                                            size=(max(datahist)-min(datahist))/10
                                         ),
                                         name="donnée historique",
                                         histnorm='probability density',
@@ -406,5 +408,5 @@ def update_graphics(categorie, region, first_filter, stats,children):
             )
         ]
     )
-    children.append(div_children2)
+    #children.append(div_children2)
     return div_children2
