@@ -21,9 +21,13 @@ layout = html.Div([
         Ce jeu de données affiche le nombre de matériels roulants SNCF Voyageurs exploitables par série et par activité.
 
 Situation du Matériel = Exploitable
+
 Libellé ECM (En Charge de la Maintenance) = SNCF Mobilité
+
 Libellé Détenteur = SNCF Mobilité
+
 Libellé Exploitant = TER, Intercités, Transilien, Voyages SNCF
+
 Les matériels roulants des filiales (Thalys, etc.) sont hors périmètre.
 
 Pour le cas de la série V2N, chaque caisse correspond à un matériel roulant.
