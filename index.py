@@ -45,21 +45,34 @@ container = html.Div([
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/':
-        return html.Div([dcc.Markdown('''
+        return html.Div([
+            dcc.Markdown(
+                '''
             ### The Application
-            This application was built by [Vhiny-Guilley](https://linkedin.com/in/vhinyguilley-mombo) at departement de 
-            de mathematique CNAM supervised by [Dariush Ghorbanzadeh](https://maths.cnam.fr/Membres/ghorbanzadeh/)
-            Using historical SNCF data,
-            this application provides visualizations for regularity statistics dating from 1991 to 2020. Selecting
-            from a dropdown menu, the era will update the list of available teams and players in the range set on the years
-            slider. The slider allows the user to adjust the range of years with which the data is presented.
+            Cette application a été developpé par [Vhiny-Guilley](https://linkedin.com/in/vhinyguilley-mombo) durant son stage au CNAM Ile de France, sous la supervision de 
+            
+            [Dariush Ghorbanzadeh](https://maths.cnam.fr/Membres/ghorbanzadeh/), dans le but de faire une analyse descriptive des données de regularité, du temps de travail, etc. à la
+            
+            SNCF. C'est une application multipage, qui utilise plusieurs dataset, que l'on peut consulter grâce à plusieurs menu deroulant et slider pour les dates.
+            
+            Pour commencer, vous pouvez cliquer sur l'un des onglets ci dessus.
+            
+             Ceci n'est pas une versions definitive, certaines pages sont en cours de developpement.
+            
             ### The Analysis
             We are still working on it!! we are back soon !!
-            ### The Data
-            The data used in this application was retrieved from [SNCF Data ressources](https://ressources.data.sncf.com/pages/accueil/).
-            This database is copyright 1996-2021 by SNCF. This data is licensed under a Creative Commons Attribution-ShareAlike
+            ### Les Données 
+            
+            Les données utilisées dans cette application proviennent principalement du sitr [SNCF Data ressources](https://ressources.data.sncf.com/pages/accueil/).
+            Ces données sont tout droits reservées SNCF et sont sous licence Creative Commons Attribution-ShareAlike
             3.0 Unported License. For details see: [CreativeCommons](http://creativecommons.org/licenses/by-sa/3.0/)
-        ''')], className='home')
+        ''',
+                style={"textAlign": "center",
+                       "font-size": "18px"}
+
+            )
+        ]
+        )
     elif pathname == '/apps/regularite':
         return regularite.layout
     elif pathname == '/apps/tempTravail':
